@@ -28,6 +28,8 @@ interface CoOwnNFTInterface extends ethers.utils.Interface {
     "balanceOf(address)": FunctionFragment;
     "burn(uint256)": FunctionFragment;
     "buyFraction(uint256,uint256)": FunctionFragment;
+    "count()": FunctionFragment;
+    "fractionsOwnedInProperty(uint256,address)": FunctionFragment;
     "getApproved(uint256)": FunctionFragment;
     "initialize(string,string,address)": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
@@ -40,9 +42,10 @@ interface CoOwnNFTInterface extends ethers.utils.Interface {
     "supportsInterface(bytes4)": FunctionFragment;
     "symbol()": FunctionFragment;
     "tokenURI(uint256)": FunctionFragment;
+    "totalPropertiesListed(address)": FunctionFragment;
+    "totalPropertiesOwned(address)": FunctionFragment;
     "transferFrom(address,address,uint256)": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
-    "viewListedProperties(address)": FunctionFragment;
   };
 
   encodeFunctionData(
@@ -62,6 +65,11 @@ interface CoOwnNFTInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "buyFraction",
     values: [BigNumberish, BigNumberish]
+  ): string;
+  encodeFunctionData(functionFragment: "count", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "fractionsOwnedInProperty",
+    values: [BigNumberish, string]
   ): string;
   encodeFunctionData(
     functionFragment: "getApproved",
@@ -103,15 +111,19 @@ interface CoOwnNFTInterface extends ethers.utils.Interface {
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
+    functionFragment: "totalPropertiesListed",
+    values: [string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "totalPropertiesOwned",
+    values: [string]
+  ): string;
+  encodeFunctionData(
     functionFragment: "transferFrom",
     values: [string, string, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "transferOwnership",
-    values: [string]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "viewListedProperties",
     values: [string]
   ): string;
 
@@ -125,6 +137,11 @@ interface CoOwnNFTInterface extends ethers.utils.Interface {
   decodeFunctionResult(functionFragment: "burn", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "buyFraction",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "count", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "fractionsOwnedInProperty",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -158,15 +175,19 @@ interface CoOwnNFTInterface extends ethers.utils.Interface {
   decodeFunctionResult(functionFragment: "symbol", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "tokenURI", data: BytesLike): Result;
   decodeFunctionResult(
+    functionFragment: "totalPropertiesListed",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "totalPropertiesOwned",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "transferFrom",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
     functionFragment: "transferOwnership",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "viewListedProperties",
     data: BytesLike
   ): Result;
 
@@ -297,6 +318,14 @@ export class CoOwnNFT extends BaseContract {
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    count(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    fractionsOwnedInProperty(
+      _tokenId: BigNumberish,
+      _address: string,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
+
     getApproved(
       tokenId: BigNumberish,
       overrides?: CallOverrides
@@ -361,6 +390,16 @@ export class CoOwnNFT extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[string]>;
 
+    totalPropertiesListed(
+      _address: string,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber[]]>;
+
+    totalPropertiesOwned(
+      _address: string,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber[]]>;
+
     transferFrom(
       from: string,
       to: string,
@@ -372,11 +411,6 @@ export class CoOwnNFT extends BaseContract {
       newOwner: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
-
-    viewListedProperties(
-      _lister: string,
-      overrides?: CallOverrides
-    ): Promise<[void]>;
   };
 
   Properties(
@@ -420,6 +454,14 @@ export class CoOwnNFT extends BaseContract {
     _fractions: BigNumberish,
     overrides?: PayableOverrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
+
+  count(overrides?: CallOverrides): Promise<BigNumber>;
+
+  fractionsOwnedInProperty(
+    _tokenId: BigNumberish,
+    _address: string,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
 
   getApproved(
     tokenId: BigNumberish,
@@ -479,6 +521,16 @@ export class CoOwnNFT extends BaseContract {
 
   tokenURI(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
 
+  totalPropertiesListed(
+    _address: string,
+    overrides?: CallOverrides
+  ): Promise<BigNumber[]>;
+
+  totalPropertiesOwned(
+    _address: string,
+    overrides?: CallOverrides
+  ): Promise<BigNumber[]>;
+
   transferFrom(
     from: string,
     to: string,
@@ -490,11 +542,6 @@ export class CoOwnNFT extends BaseContract {
     newOwner: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
-
-  viewListedProperties(
-    _lister: string,
-    overrides?: CallOverrides
-  ): Promise<void>;
 
   callStatic: {
     Properties(
@@ -535,6 +582,14 @@ export class CoOwnNFT extends BaseContract {
       _fractions: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[boolean, string]>;
+
+    count(overrides?: CallOverrides): Promise<BigNumber>;
+
+    fractionsOwnedInProperty(
+      _tokenId: BigNumberish,
+      _address: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     getApproved(
       tokenId: BigNumberish,
@@ -592,6 +647,16 @@ export class CoOwnNFT extends BaseContract {
 
     tokenURI(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
 
+    totalPropertiesListed(
+      _address: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber[]>;
+
+    totalPropertiesOwned(
+      _address: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber[]>;
+
     transferFrom(
       from: string,
       to: string,
@@ -601,11 +666,6 @@ export class CoOwnNFT extends BaseContract {
 
     transferOwnership(
       newOwner: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    viewListedProperties(
-      _lister: string,
       overrides?: CallOverrides
     ): Promise<void>;
   };
@@ -724,6 +784,14 @@ export class CoOwnNFT extends BaseContract {
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
+    count(overrides?: CallOverrides): Promise<BigNumber>;
+
+    fractionsOwnedInProperty(
+      _tokenId: BigNumberish,
+      _address: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     getApproved(
       tokenId: BigNumberish,
       overrides?: CallOverrides
@@ -788,6 +856,16 @@ export class CoOwnNFT extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    totalPropertiesListed(
+      _address: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    totalPropertiesOwned(
+      _address: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     transferFrom(
       from: string,
       to: string,
@@ -798,11 +876,6 @@ export class CoOwnNFT extends BaseContract {
     transferOwnership(
       newOwner: string,
       overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    viewListedProperties(
-      _lister: string,
-      overrides?: CallOverrides
     ): Promise<BigNumber>;
   };
 
@@ -841,6 +914,14 @@ export class CoOwnNFT extends BaseContract {
       _tokenId: BigNumberish,
       _fractions: BigNumberish,
       overrides?: PayableOverrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    count(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    fractionsOwnedInProperty(
+      _tokenId: BigNumberish,
+      _address: string,
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     getApproved(
@@ -907,6 +988,16 @@ export class CoOwnNFT extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    totalPropertiesListed(
+      _address: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    totalPropertiesOwned(
+      _address: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     transferFrom(
       from: string,
       to: string,
@@ -917,11 +1008,6 @@ export class CoOwnNFT extends BaseContract {
     transferOwnership(
       newOwner: string,
       overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    viewListedProperties(
-      _lister: string,
-      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
   };
 }

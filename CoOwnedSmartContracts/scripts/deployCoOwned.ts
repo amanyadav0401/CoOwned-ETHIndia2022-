@@ -11,22 +11,22 @@ function sleep(ms: any) {
   }
 
 async function main() {
-    const coNFT = await ethers.getContractFactory("CoOwnNFT");
-    const CoNFT = await coNFT.deploy();
+    const rentNFT = await ethers.getContractFactory("RentalNFT");
+    const RentNFT = await rentNFT.deploy();
     await sleep(2000);
-    console.log("CONFT Address- "+CoNFT.address);
+    console.log("RentNFT Address- "+RentNFT.address);
 
-    await sleep(2000);
-    const vaultFactory = await ethers.getContractFactory("VaultFactory");
-    const VaultFactor = await vaultFactory.deploy();
-    await sleep(2000);
-    console.log("Vault factory Address- "+VaultFactor.address);
+    // await sleep(2000);
+    // const vaultFactory = await ethers.getContractFactory("VaultFactory");
+    // const VaultFactor = await vaultFactory.deploy();
+    // await sleep(2000);
+    // console.log("Vault factory Address- "+VaultFactor.address);
 
-    await sleep(2000);
-    const vault = await ethers.getContractFactory("Vault");
-    const VAult = await vault.deploy();
-    await sleep(2000);
-    console.log("Vault Address- "+VAult.address);
+    // await sleep(2000);
+    // const vault = await ethers.getContractFactory("Vault");
+    // const VAult = await vault.deploy();
+    // await sleep(2000);
+    // console.log("Vault Address- "+VAult.address);
 
 }  
 

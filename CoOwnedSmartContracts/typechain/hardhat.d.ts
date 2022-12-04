@@ -109,6 +109,10 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.OwnedUpgradeabilityProxy__factory>;
     getContractFactory(
+      name: "RentalNFT",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.RentalNFT__factory>;
+    getContractFactory(
       name: "SaitaStaking",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.SaitaStaking__factory>;
@@ -265,6 +269,11 @@ declare module "hardhat/types/runtime" {
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.OwnedUpgradeabilityProxy>;
+    getContractAt(
+      name: "RentalNFT",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.RentalNFT>;
     getContractAt(
       name: "SaitaStaking",
       address: string,
